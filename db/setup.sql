@@ -95,6 +95,8 @@ INSERT INTO supplies (supplier_id, barcode) VALUES
 (101, 2001),
 (101, 2002),
 (102, 2003),
+(102, 1001),
+(102, 1002),
 (102, 2004);
 
 INSERT INTO backorder (order_num, complete_date, start_date, quantity, employee_ssn, barcode, supplier_id, store_num) VALUES

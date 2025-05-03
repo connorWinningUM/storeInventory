@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QPushButton, QLabel
+from PyQt5.QtWidgets import QWidget, QFormLayout, QLineEdit, QPushButton, QLabel, QHBoxLayout
 from PyQt5.QtCore import Qt
 from db import connect
 
@@ -34,8 +34,17 @@ class LoginLayout(QWidget):
         self.error_label.setText("")  # No error by default
         self.layout.addWidget(self.error_label)
 
+        # Create a container to center and set width
+        contentContainer = QWidget()
+        contentContainer.setLayout(self.layout)
+        contentContainer.setFixedWidth(400)
+        mainLayout = QHBoxLayout()
+        mainLayout.addStretch(1)   #adds a strech on the left
+        mainLayout.addWidget(contentContainer, alignment=Qt.AlignCenter)
+        mainLayout.addStretch(1)   #adds a strech on the right
 
-        self.setLayout(self.layout)
+
+        self.setLayout(mainLayout)
 
     def on_login_pressed(self):
         username = self.username_input.text()
@@ -47,6 +56,8 @@ class LoginLayout(QWidget):
         cursor = conn.cursor()
         cursor.execute("SELECT password FROM employee WHERE username = %s", (username,))
         passwords = cursor.fetchall()
+        cursor.close()
+        conn.close()
 
         if(len(passwords) > 1):
             self.error_label.setText("Database Error: More Than 1 Account with username: " + username)
@@ -56,7 +67,12 @@ class LoginLayout(QWidget):
             return
 
         if(passwords[0][0] == password_input):
+            self.username_input.clear()
+            self.password_input.clear()
+            self.stacked_widget.widget(1).passUsername(username)
             self.stacked_widget.setCurrentIndex(1)
+        else:
+            self.error_label.setText("Incorrect Login Credentials: Incorrect Password")
 
     def on_create_account_pressed(self):
         self.stacked_widget.setCurrentIndex(4)

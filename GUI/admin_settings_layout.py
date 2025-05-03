@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton
 
 class AdminSettingsLayout(QWidget):
-    def __init__(self):
+    def __init__(self, stacked_widget):
         super().__init__()
         self.layout = QVBoxLayout()
 

@@ -3,10 +3,10 @@ from GUI.inventoryTaskbar import inventoryTaskbar
 from db import connect
 
 class InventoryLayout(QWidget):
-    def __init__(self):
+    def __init__(self, stacked_widget):
         super().__init__()
         self.layout = QHBoxLayout()
-
+        self.stacked_widget = stacked_widget
         # Inventory TaskBar
         self.taskBar = inventoryTaskbar(self.on_search)
         leftContainer = QWidget()
@@ -18,7 +18,6 @@ class InventoryLayout(QWidget):
         # add query label
         self.queryLabel = QLabel(self)
         self.queryLabel.setText("")
-        self.layout.addWidget(self.queryLabel)
 
         self.rightSideLayout = QVBoxLayout()
         rightContainer = QWidget()
@@ -27,19 +26,34 @@ class InventoryLayout(QWidget):
         headers = ["Barcode", "Name", "Category", "Item Description", "Cost", "Quantity", "Supplier Name", "Supplier ID", "Store Number"]
         self.inventoryList.setColumnCount(len(headers))
         self.inventoryList.setHorizontalHeaderLabels(headers)
+        self.rightSideLayout.addWidget(self.queryLabel)
         self.rightSideLayout.addWidget(self.inventoryList)
 
-        # Refresh button
-        refresh_btn = QPushButton("Refresh Inventory")
-        self.rightSideLayout.addWidget(refresh_btn)
-
-        # Add Item button
-        add_item_btn = QPushButton("Go to Add Item")
-        self.rightSideLayout.addWidget(add_item_btn)
+        # MenuBar
+        inventoryActionsContainer = QWidget()
+        self.inventoryActionsLayout = QHBoxLayout()
+        self.usernameLabel = QLabel()
+        logoutBtn = QPushButton("Logout")
+        logoutBtn.clicked.connect(self.on_logout_pressed)
+        self.manageAccounts = QPushButton("Manage Accounts")
+        self.manageAccounts.clicked.connect(self.on_manage_accounts_pressed)
+        add_item_btn = QPushButton("+ Add Item")
+        add_item_btn.clicked.connect(self.on_add_item_pressed)
+        make_backorder_button = QPushButton("Create Backorder")
+        self.inventoryActionsLayout.addWidget(self.usernameLabel)
+        self.inventoryActionsLayout.addWidget(logoutBtn)
+        self.inventoryActionsLayout.addWidget(self.manageAccounts)
+        self.inventoryActionsLayout.addWidget(add_item_btn)
+        self.inventoryActionsLayout.addWidget(make_backorder_button)
+        inventoryActionsContainer.setLayout(self.inventoryActionsLayout)
+        self.layout.setMenuBar(inventoryActionsContainer)
 
         rightContainer.setLayout(self.rightSideLayout)
         self.layout.addWidget(rightContainer, stretch=3)
         self.setLayout(self.layout)
+
+        #have items loaded in by default
+        self.on_search()
 
     def on_search(self):
         store_num = self.taskBar.storeSelect.currentData()
@@ -48,7 +62,6 @@ class InventoryLayout(QWidget):
         sortBy = self.taskBar.sortByList.currentData()
         quantityMin = self.taskBar.quantityMin.text()
         quantityMax = self.taskBar.quantityMax.text()
-        print(quantityMin)
         supplier = self.taskBar.supplier.currentData()
         ignoreSupplier = False
         categories = self.taskBar.categories.get_checked_items()
@@ -89,8 +102,6 @@ class InventoryLayout(QWidget):
             
             #populate the table
             self.inventoryList.setRowCount(len(results))
-
-            print(results)
 
             for row_idx, row_data in enumerate(results):
                 for col_idx, value in enumerate(row_data):
@@ -141,5 +152,24 @@ class InventoryLayout(QWidget):
 
         return query, params
 
+    def on_add_item_pressed(self):
+        self.stacked_widget.widget(2).pass_username(self.username)
+        self.stacked_widget.setCurrentIndex(2)
+
+    def passUsername(self, username):
+        self.username = username
+        self.usernameLabel.setText(f"[{self.username}]")
+    
+    def passRole(self, role):
+        self.role = role
+        if role == "admin" or role == "manager":
+            self.inventoryActionsLayout.addWidget(self.manageAccounts)
+
+    def on_logout_pressed(self):
+        self.username = ""
+        self.stacked_widget.setCurrentIndex(0)
+
+    def on_manage_accounts_pressed(self):
+        return
 
 

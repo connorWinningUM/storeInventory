@@ -151,6 +151,7 @@ class inventoryTaskbar(QWidget):
         for store_num, store_name, city, state in stores:
             self.storeSelect.addItem(f"#{store_num} - {store_name}, {city}, {state}", store_num)
         self.layout.addWidget(self.storeSelect)
+        conn.close()
 
     def updateSuppliers(self):
         conn = connect()
@@ -161,3 +162,4 @@ class inventoryTaskbar(QWidget):
         suppliers = cursor.fetchall()
         for supplier_id, supplier_name in suppliers:
             self.supplier.addItem(f"{supplier_name} - {supplier_id}", supplier_id)
+        conn.close()

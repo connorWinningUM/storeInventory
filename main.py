@@ -22,13 +22,13 @@ class InventoryApp(QWidget):
         self.main_layout = QVBoxLayout()
 
         # create all of the layouts for the window
-        self.inventory_layout = InventoryLayout()
         self.login_layout = LoginLayout(self.stacked_widget)
-        self.add_item_layout = AddItemLayout()
-        self.admin_settings_layout = AdminSettingsLayout()
+        self.inventory_layout = InventoryLayout(self.stacked_widget)
+        self.add_item_layout = AddItemLayout(self.stacked_widget)
+        self.admin_settings_layout = AdminSettingsLayout(self.stacked_widget)
         self.create_account_layout = CreateAccount(self.stacked_widget)
 
-        # store all of the layouts in the stacked widget object
+        # store all of the layouts in the stacked widget object (seperate screens/windows)
         self.stacked_widget.addWidget(self.login_layout)            # index: 0
         self.stacked_widget.addWidget(self.inventory_layout)        # index: 1
         self.stacked_widget.addWidget(self.add_item_layout)         # index: 2

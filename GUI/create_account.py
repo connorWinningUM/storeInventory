@@ -59,6 +59,10 @@ class CreateAccount(QWidget):
         accept_button.clicked.connect(self.on_accept_button_pressed)
         self.layout.addWidget(accept_button)
 
+        go_back = QPushButton("Go back to login")
+        go_back.clicked.connect(self.on_back_button_pressed)
+        self.layout.addWidget(go_back)
+
         self.error_label = QLabel(self)
         self.error_label.setStyleSheet("color: red; font-weight: bold;")
         self.error_label.setAlignment(Qt.AlignCenter)
@@ -115,4 +119,7 @@ class CreateAccount(QWidget):
         cursor.close()
         conn.close()
 
+        self.stacked_widget.setCurrentIndex(0)
+
+    def on_back_button_pressed(self):
         self.stacked_widget.setCurrentIndex(0)
