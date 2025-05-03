@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QLabel, QGridLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QLabel, QGridLayout, QPushButton, QHBoxLayout
 from db import connect
 from PyQt5.QtCore import Qt
 from GUI.checkBoxList import CheckBoxListWidget
@@ -15,10 +15,23 @@ class InventoryStatistics(QWidget):
         # Main layout
         main_layout = QVBoxLayout(self)
         
+        # Header layout with title and back button
+        header_layout = QHBoxLayout()
+        main_layout.addLayout(header_layout)
+        
         # Title
         title = QLabel("Inventory Statistics")
         title.setStyleSheet("font-size: 18pt; font-weight: bold;")
-        main_layout.addWidget(title)
+        header_layout.addWidget(title)
+        
+        # Add stretch to push the back button to the right
+        header_layout.addStretch()
+        
+        # Back Button in top right corner
+        back_button = QPushButton("Back")
+        back_button.clicked.connect(self.goBack)
+        back_button.setFixedWidth(100)
+        header_layout.addWidget(back_button)
         
         # Create tabs for each stat
         tabs = QTabWidget()
@@ -38,6 +51,9 @@ class InventoryStatistics(QWidget):
         tabs.addTab(employee_tab, "Employee Stats")
 
         self.connection.close()
+    
+    def goBack(self):
+        self.stacked_widget.setCurrentIndex(self.backIndex)
         
     def createBackorderTab(self):
         tab = QWidget()
@@ -284,3 +300,7 @@ class InventoryStatistics(QWidget):
             row += 1
         
         return tab
+    
+    #used to know which stacked_widget index is the previous screen
+    def update_back_index(self, index):
+        self.backIndex = index

@@ -22,6 +22,7 @@ class InventoryLayout(QWidget):
 
         self.rightSideLayout = QVBoxLayout()
         rightContainer = QWidget()
+        
         # Inventory list
         self.inventoryList = QTableWidget()
         headers = ["Barcode", "Name", "Category", "Item Description", "Cost", "Quantity", "Supplier Name", "Supplier ID", "Store Number", "Backorder Count"]
@@ -176,9 +177,10 @@ class InventoryLayout(QWidget):
         self.stacked_widget.setCurrentIndex(0)
 
     def on_manage_accounts_pressed(self):
-        return
+        self.stacked_widget.setCurrentIndex(3)
     
     def on_statistics_pressed(self):
+        self.stacked_widget.widget(5).update_back_index(1)
         self.stacked_widget.setCurrentIndex(5)
 
 

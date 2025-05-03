@@ -22,11 +22,6 @@ class LoginLayout(QWidget):
         login_btn.clicked.connect(self.on_login_pressed)
         self.layout.addWidget(login_btn)
 
-        # create account button
-        create_account_btn = QPushButton("Create Account")
-        create_account_btn.clicked.connect(self.on_create_account_pressed)
-        self.layout.addWidget(create_account_btn)
-
         # Error Label
         self.error_label = QLabel(self)
         self.error_label.setStyleSheet("color: red; font-weight: bold;")
@@ -76,6 +71,3 @@ class LoginLayout(QWidget):
             self.stacked_widget.setCurrentIndex(1)
         else:
             self.error_label.setText("Incorrect Login Credentials: Incorrect Password")
-
-    def on_create_account_pressed(self):
-        self.stacked_widget.setCurrentIndex(4)

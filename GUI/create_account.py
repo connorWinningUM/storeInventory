@@ -119,7 +119,7 @@ class CreateAccount(QWidget):
         cursor.close()
         conn.close()
 
-        self.stacked_widget.setCurrentIndex(0)
+        self.stacked_widget.setCurrentIndex(5)
 
     def on_back_button_pressed(self):
-        self.stacked_widget.setCurrentIndex(0)
+        self.stacked_widget.setCurrentIndex(5)
