@@ -56,6 +56,8 @@ class LoginLayout(QWidget):
         cursor = conn.cursor()
         cursor.execute("SELECT password FROM employee WHERE username = %s", (username,))
         passwords = cursor.fetchall()
+        cursor.execute("SELECT role FROM employee WHERE username = %s", (username,))
+        role = cursor.fetchone()
         cursor.close()
         conn.close()
 
@@ -70,6 +72,7 @@ class LoginLayout(QWidget):
             self.username_input.clear()
             self.password_input.clear()
             self.stacked_widget.widget(1).passUsername(username)
+            self.stacked_widget.widget(1).passRole(role[0])
             self.stacked_widget.setCurrentIndex(1)
         else:
             self.error_label.setText("Incorrect Login Credentials: Incorrect Password")

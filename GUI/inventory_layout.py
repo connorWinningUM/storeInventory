@@ -7,6 +7,7 @@ class InventoryLayout(QWidget):
         super().__init__()
         self.layout = QHBoxLayout()
         self.stacked_widget = stacked_widget
+        
         # Inventory TaskBar
         self.taskBar = inventoryTaskbar(self.on_search)
         leftContainer = QWidget()
@@ -23,7 +24,7 @@ class InventoryLayout(QWidget):
         rightContainer = QWidget()
         # Inventory list
         self.inventoryList = QTableWidget()
-        headers = ["Barcode", "Name", "Category", "Item Description", "Cost", "Quantity", "Supplier Name", "Supplier ID", "Store Number"]
+        headers = ["Barcode", "Name", "Category", "Item Description", "Cost", "Quantity", "Supplier Name", "Supplier ID", "Store Number", "Backorder Count"]
         self.inventoryList.setColumnCount(len(headers))
         self.inventoryList.setHorizontalHeaderLabels(headers)
         self.rightSideLayout.addWidget(self.queryLabel)
@@ -37,12 +38,14 @@ class InventoryLayout(QWidget):
         logoutBtn.clicked.connect(self.on_logout_pressed)
         self.manageAccounts = QPushButton("Manage Accounts")
         self.manageAccounts.clicked.connect(self.on_manage_accounts_pressed)
+        self.statistics = QPushButton("View Statistics")
+        self.statistics.clicked.connect(self.on_statistics_pressed)
         add_item_btn = QPushButton("+ Add Item")
         add_item_btn.clicked.connect(self.on_add_item_pressed)
         make_backorder_button = QPushButton("Create Backorder")
         self.inventoryActionsLayout.addWidget(self.usernameLabel)
         self.inventoryActionsLayout.addWidget(logoutBtn)
-        self.inventoryActionsLayout.addWidget(self.manageAccounts)
+        #self.inventoryActionsLayout.addWidget(self.manageAccounts)
         self.inventoryActionsLayout.addWidget(add_item_btn)
         self.inventoryActionsLayout.addWidget(make_backorder_button)
         inventoryActionsContainer.setLayout(self.inventoryActionsLayout)
@@ -111,7 +114,6 @@ class InventoryLayout(QWidget):
             self.queryLabel.setText(f"Found {len(results)} matching items")
 
         except Exception as e:
-            self.queryLabel.setText(f"Error executing query: {e}")
             print(e)
         finally:
             conn.close()
@@ -148,7 +150,10 @@ class InventoryLayout(QWidget):
 
         # sort by
         if sortBy:
-            query += f" ORDER BY {sortBy}"
+            if sortBy == "backorder_count":
+                print("BACK ORDER QUERY")
+            else:
+                query += f" ORDER BY {sortBy}"
 
         return query, params
 
@@ -164,6 +169,7 @@ class InventoryLayout(QWidget):
         self.role = role
         if role == "admin" or role == "manager":
             self.inventoryActionsLayout.addWidget(self.manageAccounts)
+            self.inventoryActionsLayout.addWidget(self.statistics)
 
     def on_logout_pressed(self):
         self.username = ""
@@ -171,5 +177,8 @@ class InventoryLayout(QWidget):
 
     def on_manage_accounts_pressed(self):
         return
+    
+    def on_statistics_pressed(self):
+        self.stacked_widget.setCurrentIndex(5)
 
 

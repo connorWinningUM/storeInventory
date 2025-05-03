@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLabel, QLineEdit, QComboBox
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLabel, QLineEdit, QComboBox, QTextEdit
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIntValidator, QDoubleValidator
 from GUI.searchSuppliersWidget import SupplierSearchWidget
@@ -84,7 +84,7 @@ class AddItemLayout(QWidget):
         layout = QHBoxLayout()
         label = QLabel()
         label.setText("Description: ")
-        self.description = QLineEdit()
+        self.description = QTextEdit()
         self.description.setFixedWidth(300)
         self.description.setFixedHeight(300)
         layout.addWidget(label, alignment=Qt.AlignTop)
@@ -147,7 +147,7 @@ class AddItemLayout(QWidget):
         if self.cost.text() == "":
             self.errorLabel.setText("No Cost Specified")
             return
-        if self.description.text() == "":
+        if self.description.toPlainText() == "":
             self.errorLabel.setText("No Description Specified")
             return
         if self.barcode.text() == "":
@@ -182,13 +182,16 @@ class AddItemLayout(QWidget):
         params.append(barcode)
         params.append(self.name.text())
         params.append(int(self.quantity.text()))
-        params.append(self.description.text())
+        params.append(self.description.toPlainText())
         params.append(self.category.currentData())
         params.append(float(self.cost.text()))
         params.append(store_num)
-        cursor.execute("INSERT INTO item (barcode, name, quantity, description, category, cost, store_num) VALUES (%s, %s, %s, %s, %s, %s, %s)", params)
-        cursor.execute("INSERT INTO supplies (supplier_id, barcode) VALUES (%s, %s)", (supplier_id, barcode))
-        conn.commit()
+        try:
+            cursor.execute("INSERT INTO item (barcode, name, quantity, description, category, cost, store_num) VALUES (%s, %s, %s, %s, %s, %s, %s)", params)
+            cursor.execute("INSERT INTO supplies (supplier_id, barcode) VALUES (%s, %s)", (supplier_id, barcode))
+            conn.commit()
+        except Exception as e:
+            print(e)
         self.stacked_widget.setCurrentIndex(1)
         cursor.close()
         conn.close()
