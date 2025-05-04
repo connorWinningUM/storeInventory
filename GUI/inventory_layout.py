@@ -16,6 +16,10 @@ class InventoryLayout(QWidget):
         leftContainer.setLayout(taskLayout)
         self.layout.addWidget(leftContainer, stretch=1)
 
+        # Refresh Button
+        refresh = QPushButton("Refresh Item List")
+        refresh.clicked.connect(self.on_search)
+
         # add query label
         self.queryLabel = QLabel(self)
         self.queryLabel.setText("")
@@ -28,29 +32,42 @@ class InventoryLayout(QWidget):
         headers = ["Barcode", "Name", "Category", "Item Description", "Cost", "Quantity", "Supplier Name", "Supplier ID", "Store Number", "Backorder Count"]
         self.inventoryList.setColumnCount(len(headers))
         self.inventoryList.setHorizontalHeaderLabels(headers)
+        self.rightSideLayout.addWidget(refresh)
         self.rightSideLayout.addWidget(self.queryLabel)
         self.rightSideLayout.addWidget(self.inventoryList)
 
-        # MenuBar
+        # MenuBar --------------------------------------------
         inventoryActionsContainer = QWidget()
         self.inventoryActionsLayout = QHBoxLayout()
+
         self.usernameLabel = QLabel()
+
         logoutBtn = QPushButton("Logout")
         logoutBtn.clicked.connect(self.on_logout_pressed)
+
         self.manageAccounts = QPushButton("Manage Accounts")
         self.manageAccounts.clicked.connect(self.on_manage_accounts_pressed)
+
         self.statistics = QPushButton("View Statistics")
         self.statistics.clicked.connect(self.on_statistics_pressed)
+
         add_item_btn = QPushButton("+ Add Item")
         add_item_btn.clicked.connect(self.on_add_item_pressed)
+
         make_backorder_button = QPushButton("Create Backorder")
+
+        check_out_items = QPushButton("Check Out Items")
+        check_out_items.clicked.connect(self.on_check_out_pressed)
+
         self.inventoryActionsLayout.addWidget(self.usernameLabel)
         self.inventoryActionsLayout.addWidget(logoutBtn)
-        #self.inventoryActionsLayout.addWidget(self.manageAccounts)
+        self.inventoryActionsLayout.addWidget(check_out_items)
         self.inventoryActionsLayout.addWidget(add_item_btn)
         self.inventoryActionsLayout.addWidget(make_backorder_button)
+
         inventoryActionsContainer.setLayout(self.inventoryActionsLayout)
         self.layout.setMenuBar(inventoryActionsContainer)
+        #-----------------------------------------------------
 
         rightContainer.setLayout(self.rightSideLayout)
         self.layout.addWidget(rightContainer, stretch=3)
@@ -185,4 +202,6 @@ class InventoryLayout(QWidget):
         self.stacked_widget.widget(5).update_statistics()
         self.stacked_widget.setCurrentIndex(5)
 
+    def on_check_out_pressed(self):
+        self.stacked_widget.setCurrentIndex(6)
 
