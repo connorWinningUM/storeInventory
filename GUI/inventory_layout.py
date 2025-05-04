@@ -207,5 +207,6 @@ class InventoryLayout(QWidget):
         self.stacked_widget.setCurrentIndex(6)
 
     def on_make_backorder_pressed(self):
+        self.stacked_widget.widget(7).pass_username(self.username)
         self.stacked_widget.setCurrentIndex(7)
 
