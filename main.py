@@ -12,6 +12,7 @@ from GUI.manageAccounts import ManageAccounts
 from GUI.create_account import CreateAccount
 from GUI.statistics import InventoryStatistics
 from GUI.checkOut import CheckOut
+from GUI.create_backorder import CreateBackorder
 
 class InventoryApp(QWidget):
     def __init__(self):
@@ -31,6 +32,7 @@ class InventoryApp(QWidget):
         self.create_account_layout = CreateAccount(self.stacked_widget)
         self.inventory_stats = InventoryStatistics(self.stacked_widget)
         self.check_out_item = CheckOut(self.stacked_widget)
+        self.create_backorder = CreateBackorder(self.stacked_widget)
 
         # store all of the layouts in the stacked widget object (seperate screens/windows)
         self.stacked_widget.addWidget(self.login_layout)            # index: 0
@@ -40,6 +42,7 @@ class InventoryApp(QWidget):
         self.stacked_widget.addWidget(self.create_account_layout)   # index: 4
         self.stacked_widget.addWidget(self.inventory_stats)         # index: 5
         self.stacked_widget.addWidget(self.check_out_item)          # index: 6
+        self.stacked_widget.addWidget(self.create_backorder)        # index: 7
 
         # set initial screen
         self.stacked_widget.setCurrentIndex(0)

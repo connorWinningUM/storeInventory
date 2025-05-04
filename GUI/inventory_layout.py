@@ -55,6 +55,7 @@ class InventoryLayout(QWidget):
         add_item_btn.clicked.connect(self.on_add_item_pressed)
 
         make_backorder_button = QPushButton("Create Backorder")
+        make_backorder_button.clicked.connect(self.on_make_backorder_pressed)
 
         check_out_items = QPushButton("Check Out Items")
         check_out_items.clicked.connect(self.on_check_out_pressed)
@@ -204,4 +205,7 @@ class InventoryLayout(QWidget):
 
     def on_check_out_pressed(self):
         self.stacked_widget.setCurrentIndex(6)
+
+    def on_make_backorder_pressed(self):
+        self.stacked_widget.setCurrentIndex(7)
 
