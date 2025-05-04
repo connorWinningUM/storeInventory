@@ -111,15 +111,19 @@ class CreateAccount(QWidget):
             return
 
         # Add user to the database
-        cursor.execute(
-        "INSERT INTO employee (ssn, name, username, password, role, store_num) VALUES (%s, %s, %s, %s, %s, %s)",
-        (ssn, name, username, password, role, store_num)
-        )
+        try:
+            cursor.execute(
+            "INSERT INTO employee (ssn, name, username, password, role, store_num) VALUES (%s, %s, %s, %s, %s, %s)",
+            (ssn, name, username, password, role, store_num)
+            )
+        except Exception as e:
+            print(e)
+
         conn.commit()
         cursor.close()
         conn.close()
 
-        self.stacked_widget.setCurrentIndex(5)
+        self.stacked_widget.setCurrentIndex(3)
 
     def on_back_button_pressed(self):
-        self.stacked_widget.setCurrentIndex(5)
+        self.stacked_widget.setCurrentIndex(3)

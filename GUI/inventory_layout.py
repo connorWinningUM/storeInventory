@@ -177,10 +177,12 @@ class InventoryLayout(QWidget):
         self.stacked_widget.setCurrentIndex(0)
 
     def on_manage_accounts_pressed(self):
+        self.stacked_widget.widget(3).update_account_list()
         self.stacked_widget.setCurrentIndex(3)
     
     def on_statistics_pressed(self):
         self.stacked_widget.widget(5).update_back_index(1)
+        self.stacked_widget.widget(5).update_statistics()
         self.stacked_widget.setCurrentIndex(5)
 
 

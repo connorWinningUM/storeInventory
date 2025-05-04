@@ -301,6 +301,35 @@ class InventoryStatistics(QWidget):
         
         return tab
     
+    def update_statistics(self):
+        # Re-establish database connection
+        if self.connection.closed:
+            self.connection = connect()
+        
+        # Get the currently selected tab index to restore it after update
+        current_tab_index = self.findChild(QTabWidget).currentIndex()
+        
+        # Remove all existing tabs
+        tab_widget = self.findChild(QTabWidget)
+        while tab_widget.count() > 0:
+            tab_widget.removeTab(0)
+        
+        # Create fresh tabs with updated data
+        backorder_tab = self.createBackorderTab()
+        tab_widget.addTab(backorder_tab, "Backorder Statistics")
+        
+        store_tab = self.createStoreTab()
+        tab_widget.addTab(store_tab, "Store Statistics")
+        
+        item_tab = self.createItemTab()
+        tab_widget.addTab(item_tab, "Inventory Statistics")
+        
+        employee_tab = self.createEmployeeTab()
+        tab_widget.addTab(employee_tab, "Employee Stats")
+        
+        # Restore the previously selected tab
+        tab_widget.setCurrentIndex(current_tab_index)
+
     #used to know which stacked_widget index is the previous screen
     def update_back_index(self, index):
         self.backIndex = index

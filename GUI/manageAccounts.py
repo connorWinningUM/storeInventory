@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QTableWidget, QTableWidgetItem, QLineEdit
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QTableWidget, QTableWidgetItem, QLineEdit, QLabel
+from PyQt5.QtCore import Qt
 from db import connect
 
 class ManageAccounts(QWidget):
@@ -68,6 +69,12 @@ class ManageAccounts(QWidget):
         self.selectedAccount.setReadOnly(True)
         accountsLayout.addWidget(self.selectedAccount)
 
+        # Error Label
+        self.errorLabel = QLabel()
+        self.errorLabel.setStyleSheet("color: red; font-weight: bold;")
+        self.errorLabel.setAlignment(Qt.AlignCenter)
+        self.errorLabel.setText("")
+
         # Add the Account container to the layout
         accountsContainer.setLayout(accountsLayout)
         self.layout.addWidget(accountsContainer, 5)
@@ -76,13 +83,44 @@ class ManageAccounts(QWidget):
         self.setLayout(self.layout)
 
     def on_delete_pressed(self):
-        return
-    
-    def delete_account(self, essn):
-        return
+        # Get essn of currently selected account
+        accountUsername = self.selectedAccount.text()
+        print(accountUsername)
+        conn = connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT ssn, role FROM employee WHERE username = %s", (accountUsername,))
+        account = cursor.fetchone()
+        if account[1] == "admin":
+            self.errorLabel.setText("Cannot Delete Admin Account")
+            return
+        
+        # get admin ssn for the next step
+        cursor.execute("SELECT ssn FROM employee WHERE username = %s", ('admin',))
+        adminSSN = cursor.fetchone()
+
+        # before deleting the employee, must change ssn on backorders to the admin account
+        cursor.execute("""
+            UPDATE backorder 
+            SET employee_ssn = %s 
+            WHERE employee_ssn = %s
+        """, (adminSSN, account[0]))
+
+        # now delete the employee from the database
+        cursor.execute("DELETE FROM employee WHERE ssn = %s", (account[0],))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        self.update_account_list()
     
     def on_edit_pressed(self):
-        return
+        accountUsername = self.selectedAccount.text()
+        conn = connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT ssn FROM employee WHERE username = %s", (accountUsername,))
+        account = cursor.fetchone()
+
     
     def on_back_pressed(self):
         self.stacked_widget.setCurrentIndex(1)
@@ -92,6 +130,7 @@ class ManageAccounts(QWidget):
 
     def on_stats_pressed(self):
         self.stacked_widget.widget(5).update_back_index(3)
+        self.stacked_widget.widget(5).update_statistics()
         self.stacked_widget.setCurrentIndex(5)
 
     def get_accounts(self):
