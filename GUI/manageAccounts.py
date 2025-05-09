@@ -25,7 +25,7 @@ class ManageAccounts(QWidget):
         # Edit Account
         edit = QPushButton("Edit Account")
         edit.clicked.connect(self.on_edit_pressed)
-        buttonsLayout.addWidget(edit)
+        #buttonsLayout.addWidget(edit)
 
         # Add a spacer to push create account to bottom
         buttonsLayout.addStretch()
