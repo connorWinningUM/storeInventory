@@ -132,7 +132,7 @@ class inventoryTaskbar(QWidget):
             "Electronics",
             "Clothing",
             "General",
-            "Stationary"
+            "Stationery"
         ]
         self.categories = CheckBoxListWidget(categoryList)
         self.layout.addWidget(self.categories)
