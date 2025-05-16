@@ -123,7 +123,17 @@ class CreateAccount(QWidget):
         cursor.close()
         conn.close()
 
+        self.username_input.setText("")
+        self.password_input.setText("")
+        self.reinput_password_input.setText("")
+        self.ssn_input.setText("")
+        self.name_input.setText("")
         self.stacked_widget.setCurrentIndex(3)
 
     def on_back_button_pressed(self):
+        self.username_input.setText("")
+        self.password_input.setText("")
+        self.reinput_password_input.setText("")
+        self.ssn_input.setText("")
+        self.name_input.setText("")
         self.stacked_widget.setCurrentIndex(3)
