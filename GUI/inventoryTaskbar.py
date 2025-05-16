@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (
 from db import connect
 from PyQt5.QtCore import Qt
 from GUI.checkBoxList import CheckBoxListWidget
-from PyQt5.QtGui import QIntValidator
+from PyQt5.QtGui import QDoubleValidator, QIntValidator
 
 class inventoryTaskbar(QWidget):
     def __init__(self, on_search):
@@ -91,11 +91,11 @@ class inventoryTaskbar(QWidget):
         costLabel1 = QLabel("From ")
         self.costMin = QLineEdit()
         self.costMin.setPlaceholderText("Min")
-        self.costMin.setValidator(QIntValidator())
+        self.costMin.setValidator(QDoubleValidator())
         costLabel2 = QLabel(" to ")
         self.costMax = QLineEdit()
         self.costMax.setPlaceholderText("Max")
-        self.costMax.setValidator(QIntValidator())
+        self.costMax.setValidator(QDoubleValidator())
         costLayout.addWidget(costLabel1)
         costLayout.addWidget(self.costMin)
         costLayout.addWidget(costLabel2)

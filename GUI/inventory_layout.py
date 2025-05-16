@@ -84,6 +84,8 @@ class InventoryLayout(QWidget):
         sortBy = self.taskBar.sortByList.currentData()
         quantityMin = self.taskBar.quantityMin.text()
         quantityMax = self.taskBar.quantityMax.text()
+        costMin = self.taskBar.costMin.text()
+        costMax = self.taskBar.costMax.text()
         supplier = self.taskBar.supplier.currentData()
         ignoreSupplier = False
         categories = self.taskBar.categories.get_checked_items()
@@ -92,6 +94,7 @@ class InventoryLayout(QWidget):
         # check for no inputs, set default values
         if searchTerm == "":
             searchTerm = '*'
+        
         if quantityMax == "":
             quantityMax = 9999999
         else:
@@ -100,6 +103,16 @@ class InventoryLayout(QWidget):
             quantityMin = 0
         else:
             quantityMin = int(quantityMin)
+
+        if costMax == "":
+            costMax = 9999999
+        else:
+            costMax = float(costMax)
+        if costMin == "":
+            costMin = 0
+        else:
+            costMin = float(costMin)
+
         if supplier is None:
             ignoreSupplier = True
         if not categories:
@@ -107,7 +120,7 @@ class InventoryLayout(QWidget):
 
         # build the query
         query, params = self.buildSearchQuery(store_num, searchBy, searchTerm, sortBy, quantityMin, quantityMax, 
-               supplier, ignoreSupplier, categories, ignoreCategories)
+               supplier, ignoreSupplier, categories, ignoreCategories, costMax, costMin)
 
         # execute the query
         conn = connect()
@@ -138,7 +151,7 @@ class InventoryLayout(QWidget):
             conn.close()
     
     def buildSearchQuery(self, store_num, searchBy, searchTerm, sortBy, quantityMin, quantityMax, 
-               supplier, ignoreSupplier, categories, ignoreCategories):
+               supplier, ignoreSupplier, categories, ignoreCategories, costMax, costMin):
         query = f"SELECT * FROM item_suppliers WHERE store_num = {store_num}"
         params = [] # prevents SQL injection attacks, will replace %s symbols when executed by cursor
 
@@ -166,6 +179,12 @@ class InventoryLayout(QWidget):
             placeholders = ", ".join(["%s" for _ in categories])
             query += f" AND category IN ({placeholders})"
             params.extend(categories)
+
+        # cost
+        query += " AND cost >= %s AND cost <= %s"
+        params.append(costMin)
+        params.append(costMax)
+        print(query)
 
         # sort by
         if sortBy:
